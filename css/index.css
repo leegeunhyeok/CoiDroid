@@ -1,0 +1,168 @@
+/* navbar */
+.navbar-default {
+    background-color: dodgerblue;
+}
+/* Title */
+.navbar-default .navbar-brand {
+    color: white;
+}
+/* Link */
+.navbar-default .navbar-nav > li > a {
+    color: white;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: lightgray;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: dodgerblue;
+    background-color: white;
+}
+/* Mobile */
+.navbar-default .navbar-toggle {
+    border-color: white;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: dodgerblue;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: white;
+}
+
+table {
+    border: 1px solid lightgray;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.loading {
+    text-align: center;
+    color: white;
+    background: black;
+    opacity: 0.5;
+    height: 100%;
+    width: 100%;
+    padding-top: 100px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 9999;
+}
+
+.quick-info {
+    height: 150px;
+}
+
+.login-form {
+    padding: 25px;
+}
+
+.increase {
+    color: crimson;
+}
+
+.decrease {
+    color: dodgerblue;
+}
+
+.more-info {
+    border-radius: 10px;
+    border: 1px solid lightgray;
+}
+
+.chart-btns {
+    padding-top: 25px;
+    width: 250px;
+    margin: auto;
+}
+
+.coin-own {
+    color: dodgerblue;
+}
+
+.coin-total {
+    color: gray;
+}
+
+.trade-border {
+    padding: 5px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+.trade-info {
+    margin-top: 25px;
+}
+
+.find-log {
+    margin: 10px;
+}
+
+#chart-area {
+    width: 90%;
+    height: 250px;
+    margin: auto;
+}
+
+#trade-table {
+    margin: auto;
+    width: 96%;
+}
+
+.loading-icon {
+    background-color: white;
+    border-radius: 50%;
+    animation: loading 1s infinite;
+}
+
+.main-loading {
+    width: 120px; 
+    height: 100px;
+    margin: auto;
+}
+
+.main-loading-1, .main-loading-2, .main-loading-3 {
+    float: left;
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.main-loading-1 {
+    animation: loading 1s infinite alternate;
+}
+
+.main-loading-2 {
+    animation: loading 1s 0.33s infinite alternate;
+}
+
+.main-loading-3 {
+    animation: loading 1s 0.66s infinite alternate;
+}
+
+.user-loading {
+    width: 30px;
+    height: 30px;
+    position: absolute; 
+    right: 36px; 
+    top: -5px;  
+}
+
+@keyframes loading {
+    0% {
+        transform: scale(1.0);
+        opacity: 1;
+    }
+    
+    100% {
+        transform: scale(0.0);
+        opacity: 0;
+    }
+}

@@ -1,0 +1,12 @@
+.container {
+    margin-top: 100px;
+}
+
+.panel-body {
+    padding: 50px;
+}
+
+form {
+    width: 300px;
+    margin: auto;
+}
