@@ -86,15 +86,13 @@ function createUser(id, ps, callback){
 
 // 유저 정보(코인) 
 function userCoin(id, callback){
-    var query = 'SELECT coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, cash, sum(price*count) AS wait FROM users a LEFT JOIN trade b ON a._id=b._id AND a._id="' + id + '" AND b.type=0';
+    var query = 'SELECT coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, cash, sum(price*count) AS wait FROM users a LEFT JOIN trade b ON a._id=b._id WHERE a._id="' + id + '" AND b.type=0';
     // users 테이블과 trade 테이블을 LEFT JOIN 하여 코인갯수, 캐시, 거래대기중인 캐시를 가져온다
     // 거래대기중인 캐시는 매수거래 가격만 해당하므로 trade.type이 0인 데이터만 가져오도록 함
     connection.query(query, function(err, rows, fields){
         if(err){
             callback(null);
         } else {
-            console.log('User: ' + id);
-            console.log(rows[0]);
             callback(rows[0]);
         }
     });
