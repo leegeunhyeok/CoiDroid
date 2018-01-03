@@ -13,7 +13,8 @@ exports.init = function(server ,app){
      
     var standardRateTick = 0;
     var saveTick = 0;
-    coin.saveData();
+    
+    coin.deleteOlddata();
     setInterval(function(){
         standardRateTick++;
         saveTick++;

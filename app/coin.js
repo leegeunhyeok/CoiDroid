@@ -56,13 +56,15 @@ exports.saveData = function(){
 
 // 1주일 이전 데이터는 모두 삭제 
 exports.deleteOlddata = function(){
-    var query = 'DELETE FROM coin_timeline WHERE time > (NOW() - INTERVAL 1 WEEK)'; 
-    connection(query, function(err, rows){
+    var query = 'DELETE FROM coin_timeline WHERE time < (NOW() - INTERVAL 1 WEEK)'; 
+    console.log(query);
+    connection.query(query, function(err, rows){
         if(err) {
             console.log('Delete timeline error');
             console.log(err);
         } else {
-            console.log('Deleted timeline');
+            var deletedData = rows.affectedRows;
+            console.log('Deleted {%d} timeline data', deletedData);
         }
     });
 }
