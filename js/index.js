@@ -171,7 +171,6 @@ function setCoinInfo(data){
         
         $('#rate' + index).removeClass('decrease increase');
         var rate = ((data.price - data.standard)/data.standard * 100).toFixed(2);
-        console.log(rate.toString());
         if(rate > 0){ // 변동률 0 이상
             app.coins[index].rate = '+' + rate + '%';
             $('#rate' + index).addClass('increase');

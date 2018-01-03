@@ -34,7 +34,7 @@ exports.changeAddtion = function(){
             msg += '\x1b[32m -';
         }
     }
-    console.log('Addtion Number changed : ' + msg);
+    console.log('\x1b[37mAddtion Number changed : ' + msg);
 }
 
 // 변동률 기준가격 변경 
