@@ -34,7 +34,7 @@ exports.changeAddtion = function(){
             msg += '\x1b[32m -';
         }
     }
-    console.log('\x1b[37mAddtion Number changed : ' + msg + '\x1b[0m');
+    console.log('\x1b[37mAddtion Number changed: ' + msg + '\x1b[0m');
 }
 
 // 변동률 기준가격 변경 
@@ -42,7 +42,7 @@ exports.refreshChangeRate = function(){
     coins.forEach(function(coin, i){
         coin.standard = coin.price; //현재의 가격으로 
     });
-    console.log('\x1b[33m', 'Standard price changed');
+    console.log('\x1b[33mStandard price changed' + '\x1b[0m');
 }
 
 // 코인 데이터 저장 
@@ -51,7 +51,7 @@ exports.saveData = function(){
     coins.forEach(function(coin){
         connection.query('INSERT INTO coin_timeline VALUES ("' + coin.name + '", ' + coin.price + ', "' + date + '");');
     });  
-    console.log('\x1b[36m', 'Data saved - ' + date);
+    console.log('\x1b[36mData saved - ' + date + '\x1b[0m');
 }
 
 // 1주일 이전 데이터는 모두 삭제 

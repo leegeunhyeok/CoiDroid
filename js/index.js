@@ -12,6 +12,7 @@ var app = new Vue({
     el: '#app', 
     data: {
         login: false, // 로그인여부 
+        id: '',
         init: false, // 초기화 여부 
         cash: 0, // 현재 보유중인 캐시 
         wait_cash: 0, // 거래 대기중인 캐시 
@@ -40,6 +41,7 @@ var app = new Vue({
             success: function(data){
                 app.login = data.result;
                 if(data.result){
+                    app.id = data.id;
                     userCoin();
                 }
             },
@@ -143,7 +145,6 @@ function userCoin(){
         url:'/process/userCoin',
         dataType: 'json',
         success: function(info){
-            console.log(info);
             if(info){
                 app.cash = info.data.cash; // 캐시 
                 app.wait_cash = info.data.wait || 0 ; // 거래대기중인 캐시 

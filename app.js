@@ -210,6 +210,7 @@ router.route('/user').get(function(req, res){
     }
 });
 
+// 회원가입 진행 
 router.route('/process/join').post(function(req, res){
     var regExp = /^[a-zA-Z0-9]{6,14}$/;
     var id = req.body.id;
@@ -257,8 +258,10 @@ router.route('/process/login').post(function(req, res){
 
 // 로그인 확인 
 router.route('/process/isLogin').post(function(req, res){
-    if(req.session.user !== undefined){
-        res.send({result: true});
+    var id = req.session.user;
+    
+    if(id !== undefined){
+        res.send({result: true, id: id});
     } else {
         res.send({result: false});
     }

@@ -81,6 +81,14 @@ table {
     margin: auto;
 }
 
+.id-area {
+    margin-bottom: 5px;
+    padding: 5px;
+    border: 1px solid dodgerblue;
+    border-radius: 5px;
+    display: inline-block;
+}
+
 .coin-own {
     color: dodgerblue;
 }
