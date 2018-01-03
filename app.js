@@ -137,7 +137,6 @@ function getTrade(id, callback){
             console.log(err);
             callback(false);
         } else {
-            console.log()
             if(rows.length > 0){
                 callback(rows);
             } else {
