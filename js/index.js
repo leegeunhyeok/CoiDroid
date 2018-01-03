@@ -143,6 +143,7 @@ function userCoin(){
         url:'/process/userCoin',
         dataType: 'json',
         success: function(info){
+            console.log(info);
             if(info){
                 app.cash = info.data.cash; // 캐시 
                 app.wait_cash = info.data.wait || 0 ; // 거래대기중인 캐시 
@@ -169,10 +170,13 @@ function setCoinInfo(data){
         app.coins[index].price = data.price; 
         
         $('#rate' + index).removeClass('decrease increase');
-        var rate = data.rate;
-        if(rate >= 0){ // 변동률 0 이상
+        var rate = ((data.price - data.standard)/data.standard * 100).toFixed(2);
+        console.log(rate.toString());
+        if(rate > 0){ // 변동률 0 이상
             app.coins[index].rate = '+' + rate + '%';
             $('#rate' + index).addClass('increase');
+        } else if(rate == 0) { // 0
+            app.coins[index].rate = '0.00%';
         } else { // 0 미만 
             app.coins[index].rate = rate + '%';
             $('#rate' + index).addClass('decrease');

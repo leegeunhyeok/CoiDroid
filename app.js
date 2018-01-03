@@ -27,8 +27,8 @@ var mysql = require('mysql2');
 var connection = mysql.createConnection({
     host:'localhost',
     port:'3306',
-    user:'your name',
-    password:'your password',
+    user:'root',
+    password:'1234',
     database:'coidroid'
 });
 
@@ -68,24 +68,25 @@ function checkID(id, callback){
 // 유저 새로 생성 
 function createUser(id, ps, callback){
     var query = 'INSERT INTO users VALUES ("' + id + '", "' + ps + '", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000000)';
+
     connection.query(query, function(err, rows, fields){
-         if(err) {
-             console.log(err);
-             callback(false);
-         } else {
-             if(rows.affectedRows > 0) {
-                 callback(true);
-             } else {
-                 callback(false);
-             }
-         }
+        if(err) {
+            console.log(err);
+            callback(false);
+        } else {
+            if(rows.affectedRows > 0) {
+                console.log("Added new user: " + id);
+                callback(true);
+            } else {
+                callback(false);
+            }
+        }
     });
 }
 
 // 유저 정보(코인) 
 function userCoin(id, callback){
     var query = 'SELECT coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, cash, sum(price*count) AS wait FROM users a LEFT JOIN trade b ON a._id=b._id AND a._id="' + id + '" AND b.type=0';
-    
     // users 테이블과 trade 테이블을 LEFT JOIN 하여 코인갯수, 캐시, 거래대기중인 캐시를 가져온다
     // 거래대기중인 캐시는 매수거래 가격만 해당하므로 trade.type이 0인 데이터만 가져오도록 함 
     connection.query(query, function(err, rows, fields){

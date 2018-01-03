@@ -2,7 +2,6 @@
 
 var connection;
 var coins = [];
-var standard = [];
 var addition = [];
 
 Date.prototype.format = function(f) {
@@ -22,18 +21,26 @@ Date.prototype.format = function(f) {
     });
 };
 
-// 추가 변동폭(%) 새로 지정 
+// 가격 증가, 감소 지정  
 exports.changeAddtion = function(){
-    addition.forEach(function(data, i){
-        data = Math.floor((Math.random() * 4)); // 0 ~ 3
-    });
-    console.log('\x1b[36m', 'Addtion Number changed');
+    var msg = '';
+    for(let i=0; i<addition.length; i++){
+        let temp = Math.floor((Math.random() * 2)) == 0 ? 1 : -1; // 0: 증가 1: 감소
+        addition[i] = temp;
+        
+        if(temp == 1){
+            msg += '\x1b[31m +';
+        } else {
+            msg += '\x1b[32m -';
+        }
+    }
+    console.log('Addtion Number changed : ' + msg);
 }
 
 // 변동률 기준가격 변경 
 exports.refreshChangeRate = function(){
     coins.forEach(function(coin, i){
-        standard[i] = coin.price; //현재의 가격으로 
+        coin.standard = coin.price; //현재의 가격으로 
     });
     console.log('\x1b[36m', 'Standard price changed');
 }
@@ -45,6 +52,19 @@ exports.saveData = function(){
         connection.query('INSERT INTO coin_timeline VALUES ("' + coin.name + '", ' + coin.price + ', "' + date + '");');
     });  
     console.log('\x1b[36m', 'Data saved - ' + date);
+}
+
+// 1주일 이전 데이터는 모두 삭제 
+exports.deleteOlddata = function(){
+    var query = 'DELETE FROM coin_timeline WHERE time > (NOW() - INTERVAL 1 WEEK)'; 
+    connection(query, function(err, rows){
+        if(err) {
+            console.log('Delete timeline error');
+            console.log(err);
+        } else {
+            console.log('Deleted timeline');
+        }
+    });
 }
 
 // 거래진행 
@@ -94,14 +114,13 @@ exports.tradeCheck = function(){
 // 가격변동 및 데이터 전송 
 exports.getData = function(){
     coins.forEach(function(coin, index){
-        var per = Math.floor((Math.random() * 5) - 2) + addition[index]; // 2 ~ -2 (+Addtion)
+        var per = Math.floor((Math.random() * 2)) * addition[index]; // 1 ~ -1
         var tempPrice = Math.floor(coin.price * (per/100));
         
         if(coin.price + tempPrice >= 50){ // 가격이 50 미만으로 내려가는것을 방지 
             coin.price += tempPrice; 
-            coin.rate = (((coin.price-standard[index])/standard[index]) * 100).toFixed(2); //변동률 
         } else {
-            addition[index] += 1; 
+            addition[index] = 1; 
         }
     });
     return coins;
@@ -113,9 +132,8 @@ exports.init = function(app){
     connection.query('SELECT * FROM coins', function(err, rows, fields){
         if(err) throw err;
         rows.forEach(function(data, index){
-            standard[index] = data.price;
-            coins[index] = {name: data.type, price: data.price, rate: 0, unit: data.unit};
-            addition[index] = 0;
+            coins[index] = {name: data.type, price: data.price, standard: data.price, unit: data.unit};
+            addition[index] = Math.floor((Math.random() * 2)) == 0 ? 1 : -1;
         });  
     });
 }
