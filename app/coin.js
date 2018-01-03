@@ -34,7 +34,7 @@ exports.changeAddtion = function(){
             msg += '\x1b[32m -';
         }
     }
-    console.log('\x1b[37mAddtion Number changed : ' + msg);
+    console.log('\x1b[37mAddtion Number changed : ' + msg + '\x1b[0m');
 }
 
 // 변동률 기준가격 변경 
@@ -42,7 +42,7 @@ exports.refreshChangeRate = function(){
     coins.forEach(function(coin, i){
         coin.standard = coin.price; //현재의 가격으로 
     });
-    console.log('\x1b[36m', 'Standard price changed');
+    console.log('\x1b[33m', 'Standard price changed');
 }
 
 // 코인 데이터 저장 
