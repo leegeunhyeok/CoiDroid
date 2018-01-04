@@ -49,7 +49,7 @@ exports.refreshChangeRate = function(){
 exports.saveData = function(){
     var date = new Date().format('yyyy-MM-dd HH:mm:ss');
     coins.forEach(function(coin){
-        connection.query('INSERT INTO coin_timeline VALUES ("' + coin.name + '", ' + coin.price + ', "' + date + '");');
+        connection.query('INSERT INTO coin_timeline VALUES ("' + coin.name + '", ' + coin.price + ', "' + date + '")');
     });  
     console.log('\x1b[36mData saved - ' + date + '\x1b[0m');
 }
@@ -104,7 +104,7 @@ exports.tradeCheck = function(){
                             if(err){
                                 console.log("Trade Error - Sell");
                             }
-                            connection.query('DELETE FROM trade WHERE price='+tempPrice+' AND count='+tempCount+' AND _id="'+data._id+'";');  
+                            connection.query('DELETE FROM trade WHERE price='+tempPrice+' AND count='+tempCount+' AND _id="'+data._id+'"');  
                         });
                      }
                 }

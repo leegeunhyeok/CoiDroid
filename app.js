@@ -34,7 +34,7 @@ var connection = mysql.createConnection({
 
 // 로그인 유저 인증 
 function authUser(id, password, callback){
-    var query = 'SELECT * FROM users WHERE _id = "' + id + '" AND password = "' + password + '";';
+    var query = 'SELECT * FROM users WHERE _id = "' + id + '" AND password = "' + password + '"';
     connection.query(query, function(err, rows, fields){
          if(err) {
              console.err(err);
@@ -51,7 +51,7 @@ function authUser(id, password, callback){
 
 // 아이디 중복확인 
 function checkID(id, callback){
-    connection.query('SELECT * FROM users WHERE _id = "' + id + '";', function(err, rows, fields){
+    connection.query('SELECT * FROM users WHERE _id = "' + id + '"', function(err, rows, fields){
          if(err) {
              console.err(err);
              callback(false);
@@ -86,21 +86,34 @@ function createUser(id, ps, callback){
 
 // 유저 정보(코인) 
 function userCoin(id, callback){
-    var query = 'SELECT coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, cash, sum(price*count) AS wait FROM users a LEFT JOIN trade b ON a._id=b._id WHERE a._id="' + id + '" AND b.type=0';
+    var data = {};
+    var query1 = 'SELECT coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, cash, sum(price*count) AS wait FROM users a LEFT JOIN trade b ON a._id=b._id WHERE a._id="' + id + '" AND b.type=0';
     // users 테이블과 trade 테이블을 LEFT JOIN 하여 코인갯수, 캐시, 거래대기중인 캐시를 가져온다
     // 거래대기중인 캐시는 매수거래 가격만 해당하므로 trade.type이 0인 데이터만 가져오도록 함
-    connection.query(query, function(err, rows, fields){
+    
+    var query2 = 'SELECT coin, ifnull(sum(count), 0) AS count FROM trade WHERE _id="' + id + '" AND type=1 GROUP BY coin';
+    // 코인 종류로 그룹나누고 해당 유저의 매도(type=1)거래 대기중인 코인의 갯수를 가져온다 
+    
+    connection.query(query1, function(err, rows, fields){
         if(err){
             callback(null);
         } else {
-            callback(rows[0]);
+            data.user = rows[0];
+            connection.query(query2, function(err, rows, fields){
+                if(err){
+                    callback(null);
+                } else {
+                    data.sell = rows;
+                    callback(data);
+                }
+            });
         }
     });
 }
 
 // 차트데이터로 사용할 데이터 조회 
 function getTimeline(coinName, callback){
-    var query = 'SELECT * FROM coin_timeline WHERE type="' + coinName + '" ORDER BY time DESC LIMIT 0, 288;';
+    var query = 'SELECT * FROM coin_timeline WHERE type="' + coinName + '" ORDER BY time DESC LIMIT 0, 288';
     console.log(query);
     connection.query(query, function(err, rows, fields){
         if(err) {
@@ -112,15 +125,21 @@ function getTimeline(coinName, callback){
 }
 
 // 거래내역 추가 
-function addTrade(id, coin, price, count, type, callback){
-    var query = 'INSERT INTO trade VALUES ("' + id + '", ' + coin + ', ' + type + ', ' + price + ', ' + count + ', ' + 'now());';
+function addTrade(id, coin, type, price, count, callback){
+    var query = 'INSERT INTO trade SELECT "' + id + '", ' + coin + ', ' + type + ', ' + price + ', ' + count + ', ' + 'now() FROM DUAL WHERE EXISTS';
+    if(type == 0){
+        query += '(SELECT * FROM users WHERE (SELECT cash FROM users WHERE _id="' + id +'")-' + (price * count) +'-(SELECT ifnull(sum(price*count), 0) FROM trade WHERE type=0 AND _id="' + id +'")>=0)'; // 보유중인 캐시-거래금액이 0이상일 경우
+    } else {
+        query += '(SELECT * FROM users WHERE coin' + (parseInt(coin, 10)+1) + '-' + count + '-(SELECT ifnull(sum(count), 0) FROM trade WHERE _id="' + id + '" AND type=1 AND coin=' + coin +')>=0)'; // 보유중인 코인-매도수량이 0이상일 경우 
+    }
+    
     console.log(query);
     connection.query(query, function(err, rows, fields){
         if(err){
             console.log(err);
             callback(false);
         } else {
-            if(rows.affectedRows > 0){
+            if(rows.affectedRows > 0){ // 반영된 데이터수가 0 이상이면 true 
                 callback(true);
             } else {
                 callback(false);
@@ -131,13 +150,13 @@ function addTrade(id, coin, price, count, type, callback){
 
 // 거래내역 조회 
 function getTrade(id, callback){
-    var query = 'SELECT * FROM trade WHERE _id="' + id + '" ORDER BY time DESC LIMIT 0, 10';
+    var query = 'SELECT * FROM trade WHERE _id="' + id + '" ORDER BY time DESC LIMIT 0, 10'; // 최근 10개의 데이터 
     connection.query(query, function(err, rows, fields){
         if(err){
             console.log(err);
             callback(false);
         } else {
-            if(rows.length > 0){
+            if(rows.length > 0){ 
                 callback(rows);
             } else {
                 callback(false);
@@ -185,6 +204,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+// HTML 파일 읽어서 응답 
 function readHtml(path, res){
     fs.readFile(path, function(err, data){
         if(err) throw err;
@@ -201,42 +221,20 @@ router.route('/').get(function(req, res){
     readHtml('./public/index.html', res);
 });
 
-router.route('/user').get(function(req, res){
-    if(req.session.user) {
-        readHtml('./public/user.html', res);
-    } else {
-        res.send('<script>alert("로그인 후 이용가능합니다"); location.href="/"; </script>');
-    }
-});
-
 // 회원가입 진행 
 router.route('/process/join').post(function(req, res){
-    var regExp = /^[a-zA-Z0-9]{6,14}$/;
     var id = req.body.id;
-    var ps1 = req.body.password;
-    var ps2 = req.body.password2;
+    var password = req.body.password;
     
-    if(ps1 == ps2){
-        if(ps1.match(regExp) && id.match(regExp)){
-            checkID(id, function(data){
-                if(data){
-                    createUser(id, ps1, function(result){
-                        if(result){
-                            res.send('<script>alert("가입을 환영합니다");location.href="/"</script>');
-                        } else {
-                            res.send('<script>alert("가입오류");location.href="/"</script>');
-                        }
-                    });
-                } else {
-                    res.send('<script>alert("이미 존재하는 아이디입니다");location.href="/"</script>');
-                }
+    checkID(id, function(data){ // ID 중복체크 
+        if(data){
+            createUser(id, password, function(result){ // 중복되지 않았을경우 유저 추가 
+                res.send({result: result, already: false});
             });
         } else {
-            res.send('<script>alert("형식에 맞춰서 제출해주세요");location.href="/"</script>');
+            res.send({result: null, already: true});
         }
-    } else {
-        res.send('<script>alert("비밀번호가 일치하지 않습니다");location.href="/"</script>');
-    }
+    });
 });
 
 // 로그인 
@@ -284,7 +282,7 @@ router.route('/process/userCoin').post(function(req, res){
     var id = req.session.user;
     
     if(id === undefined){
-        res.send('<script>alert("세션이 존재하지않습니다."); location.href="/"; </script>');
+        res.send(null);
     } else {
         userCoin(id, function(coins){
             if(coins){
@@ -316,10 +314,10 @@ router.route('/process/trade').post(function(req, res){
     var type = req.body.type != undefined ? 0 : 1; // buy, sell
     var id = req.session.user;
     
-    if(id == undefined) {
+    if(id === undefined) {
         res.send('<script>alert("세션이 존재하지 않습니다"); location.href = "/"</script>');
     } else {
-        addTrade(id, coin, price, count, type, function(result){
+        addTrade(id, coin, type, price, count, function(result){
             if(result){
                 res.send('<script>alert("거래요청 완료"); location.href = "/"</script>');
             } else {
@@ -368,7 +366,7 @@ app.use(router);
 /* Error handler */
 var handler = errorHandler({
     static: {
-        '404':'./public/index.html'
+        '404':'./public/index.html' // 존재하지 않는 페이지로 이동할경우 index.html 응답 
     } 
 });
 
