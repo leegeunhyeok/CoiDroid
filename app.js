@@ -186,7 +186,7 @@ function cancelTrade(id, coin, price, count, time, callback){
 var app = express();
 
 /* App set */
-app.set('port', 8080);
+app.set('port', 80);
 app.set('database', connection);
 
 /* Use middleware */
