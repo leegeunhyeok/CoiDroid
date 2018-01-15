@@ -4,37 +4,45 @@
 [ Tables ]
 
 1: users
- _id VARCHAR(15) NOT NULL PRIMARY KEY
- password VARCHAR(15) NOT NULL
- coin1 INT NOT NULL
- coin2 INT NOT NULL
- coin3 INT NOT NULL
- coin4 INT NOT NULL
- coin5 INT NOT NULL
- coin6 INT NOT NULL
- coin7 INT NOT NULL
- coin8 INT NOT NULL
- coin9 INT NOT NULL
- coin10 INT NOT NULL
- cash INT NOT NULL
-
+CREATE TABLE users (
+    _id VARCHAR(15) NOT NULL PRIMARY KEY,
+    password VARCHAR(32) NOT NULL,
+    salt VARCHAR(16) NOT NULL,
+    coin1 INT NOT NULL,
+    coin2 INT NOT NULL,
+    coin3 INT NOT NULL,
+    coin4 INT NOT NULL,
+    coin5 INT NOT NULL,
+    coin6 INT NOT NULL,
+    coin7 INT NOT NULL,
+    coin8 INT NOT NULL,
+    coin9 INT NOT NULL,
+    coin10 INT NOT NULL,
+    cash INT NOT NULL
+);
 
 2: coins
- type VARCHAR(10) NOT NULL PRIMARY KEY
- price INT NOT NULL
- unit VARCHAR(5) NOT NULL
+CREATE TABLE coins (
+    type VARCHAR(10) NOT NULL PRIMARY KEY,
+    price INT NOT NULL,
+    unit VARCHAR(5) NOT NULL
+)
 
 
 3: coin_timeline
- type VARCHAR(10) NOT NULL
- price VARCHAR(10) NOT NULL
- time DATETIME NOT NULL
+CREATE TABLE coin_timeline (
+    type VARCHAR(10) NOT NULL,
+    price VARCHAR(10) NOT NULL,
+    time DATETIME NOT NULL
+)
 
 
 4: trade
- _id VARCHAR(15) NOT NULL
- coin INT NOT NULL
- type INT NOT NULL
- price INT NOT NULL
- count INT NOT NULL
- time DATETIME NOT NULL
+CREATE TABLE trade (
+    _id VARCHAR(15) NOT NULL,
+    coin INT NOT NULL,
+    type INT NOT NULL,
+    price INT NOT NULL,
+    count INT NOT NULL,
+    time DATETIME NOT NULL
+)

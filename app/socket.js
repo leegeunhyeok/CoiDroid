@@ -3,8 +3,8 @@
 var coin = require('./coin');
 const sec = 1000; // 1000 ms = 1 sec
 
-exports.init = function(server ,app){
-    coin.init(app);
+exports.init = function(server, db){
+    coin.init(db);
     var io = require('socket.io').listen(server);
     setInterval(function(){
         coin.tradeCheck(); // 3초마다 거래진행 및 가격변동  

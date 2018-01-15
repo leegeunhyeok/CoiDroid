@@ -309,6 +309,26 @@ $(function(){
         if($(window).width() < 768 ) $('.navbar-collapse').collapse('hide');
     });
     
+    // 로그아웃 버튼 
+    $('#logout').click(function(){
+        $.ajax({
+            type:'post',
+            url:'/process/logout',
+            dataType: 'json',
+            success: function(data){
+                if(data.result){
+                    location.href = '/';
+                } else {
+                    alert('로그아웃 실패');
+                    location.href = '/';
+                }
+            },
+            error: function(){
+                alert('서버에 문제가 발생하였습니다');
+            }
+        });
+    });
+    
     // 회원가입 폼 submit 이벤트 
     $('#join-form').submit(function(){
         var regExp = /^[a-zA-Z0-9]{6,14}$/;

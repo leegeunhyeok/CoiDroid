@@ -25,7 +25,7 @@ Date.prototype.format = function(f) {
 exports.changeAddtion = function(){
     var msg = '';
     for(let i=0; i<addition.length; i++){
-        let temp = Math.floor((Math.random() * 2)) == 0 ? 1 : -1; // 0: 증가 1: 감소
+        let temp = Math.floor((Math.random() * 2)) == 0 ? 1 : -1; // 1: 증가 -1: 감소
         addition[i] = temp;
         
         if(temp == 1){
@@ -119,7 +119,7 @@ exports.getData = function(){
         var per = Math.floor((Math.random() * 2)) * addition[index]; // 1 ~ -1
         var tempPrice = Math.floor(coin.price * (per/100));
         
-        if(coin.price + tempPrice >= 50){ // 가격이 50 미만으로 내려가는것을 방지 
+        if(coin.price + tempPrice >= 100){ // 가격이 100 미만으로 내려가는것을 방지 
             coin.price += tempPrice; 
         } else {
             addition[index] = 1; 
@@ -129,8 +129,8 @@ exports.getData = function(){
 }
 
 // 초기화 
-exports.init = function(app){
-    connection = app.get('database');
+exports.init = function(db){
+    connection = db;
     connection.query('SELECT * FROM coins', function(err, rows, fields){
         if(err) throw err;
         rows.forEach(function(data, index){

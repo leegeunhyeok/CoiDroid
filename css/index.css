@@ -111,6 +111,14 @@ table {
     margin: 10px;
 }
 
+#password-info {
+    margin: auto;
+    padding: 6px;
+    text-align: center;
+    border: 1px solid dodgerblue;
+    border-radius: 5px;
+}
+
 #chart-area {
     width: 90%;
     height: 250px;
