@@ -345,8 +345,6 @@ $(function(){
                     async: false, // Non async
                     data: {id: id, password: ps1},
                     success: function(data){
-                        console.log(data);
-                        console.log(typeof data);
                         var code = data.result;
                         if(code == 0){
                             alert(id + '님 가입을 환영합니다');
