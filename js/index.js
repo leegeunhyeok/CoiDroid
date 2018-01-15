@@ -342,6 +342,7 @@ $(function(){
                 $.ajax({
                     type:'post',
                     url:'/process/join',
+                    async: false, // Non async
                     data: {id: id, password: ps1},
                     success: function(data){
                         console.log(data);
@@ -356,7 +357,7 @@ $(function(){
                         }
                     },
                     error: function(request, status, error){
-                        alert('code: ' + request.status + '\n' + 'message: ' + request.responseText + '\n' + 'error: ' + error);
+                        console.log('code: ' + request.status + '\n' + 'message: ' + request.responseText + '\n' + 'error: ' + error);
                         alert('서버에 문제가 발생하였습니다');
                     }
                 });
