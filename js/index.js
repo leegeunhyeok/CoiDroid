@@ -345,15 +345,16 @@ $(function(){
                     dataType: 'json',
                     data: {id: id, password: ps1},
                     success: function(data){
-                        if(data.already){
-                            alert('이미 존재하는 아이디입니다');
-                        } else if(data.result){
+                        var code = data.result;
+                        if(code == 0){
                             alert(id + '님 가입을 환영합니다');
-                        } else {
-                            alert('가입 오류');   
+                        } else if(code == 1){
+                            alert('가입 오류'); 
+                        } else if(code == 2) {
+                            alert('이미 존재하는 아이디입니다');
                         }
                     },
-                    error: function(){
+                    error: function(jqXHR, textStatus, error){
                         alert('서버에 문제가 발생하였습니다');
                     }
                 });

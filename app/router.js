@@ -27,10 +27,14 @@ function join(req, res){
     db.checkID(id, function(data){ // ID 중복체크 
         if(data){
             db.createUser(id, password, function(result){ // 중복되지 않았을경우 유저 추가 
-                res.send({result: result, already: false});
+                if(result){
+                    res.send({result: 0}); // 성공 
+                } else {
+                    res.send({result: 1}); // 실패 
+                }  
             });
         } else {
-            res.send({result: null, already: true});
+            res.send({result: 2}); // 아이디 중복 
         }
     });
 }
