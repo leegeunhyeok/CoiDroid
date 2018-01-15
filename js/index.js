@@ -342,9 +342,10 @@ $(function(){
                 $.ajax({
                     type:'post',
                     url:'/process/join',
-                    dataType: 'json',
                     data: {id: id, password: ps1},
                     success: function(data){
+                        console.log(data);
+                        console.log(typeof data);
                         var code = data.result;
                         if(code == 0){
                             alert(id + '님 가입을 환영합니다');
@@ -354,7 +355,8 @@ $(function(){
                             alert('이미 존재하는 아이디입니다');
                         }
                     },
-                    error: function(jqXHR, textStatus, error){
+                    error: function(request, status, error){
+                        alert('code: ' + request.status + '\n' + 'message: ' + request.responseText + '\n' + 'error: ' + error);
                         alert('서버에 문제가 발생하였습니다');
                     }
                 });
