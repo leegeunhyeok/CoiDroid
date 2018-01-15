@@ -2,6 +2,10 @@ body {
     font-family: "NanumSquareRound";
 }
 
+.modal-backdrop {
+   background-color: white;
+}
+
 /* navbar */
 .navbar-default {
     background-color: dodgerblue;
@@ -45,6 +49,20 @@ table {
 }
 
 .loading {
+    text-align: center;
+    color: white;
+    background: black;
+    opacity: 0.5;
+    height: 100%;
+    width: 100%;
+    padding-top: 100px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 9999;
+}
+
+.trade-block {
     text-align: center;
     color: white;
     background: black;
